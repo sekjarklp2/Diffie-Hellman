@@ -20,8 +20,10 @@ public class DHServer {
     public void StartServer()
     {
         //set Global parameter
-        setP(DH.getRandomPrime(12));
+        DH.getPrimeFactors();
+        setP(DH.getRandomPrime(128));
         setA(DH.getPrimitiveRoot(getP()));
+        System.out.println("NOTE used prime: " + this.getP().toString() +" used alpha: "+ this.getA().toString() +"\n");
         ServerSocket serverSocket = null;
              
         try {
@@ -109,7 +111,6 @@ public class DHServer {
 
         public DHServerThread(Socket socket, DHServer server) {
             //membuat objek thread baru
-            super("KKMultiServerThread");
             this.socket = socket;
             this.server = server;
         }
@@ -156,7 +157,9 @@ public class DHServer {
                             if (!words[1].isEmpty()) {
                                 for (DHServerThread t : threadClient) {
                                     if(t.alias.equals(words[0])) {
-                                        String msg = "Shared "+name + " " + words[1];
+                                        String msg = "Received public key from "+this.name;
+                                        t.out.println(msg);
+                                        msg = "Shared "+name + " " + words[1];
                                         //System.out.println(msg);
                                         t.out.println(msg);
                                         this.out.println(words[0] + " received your public key");
@@ -176,7 +179,7 @@ public class DHServer {
                 threadClient.remove(this);
                 out.println("Server :you quit");
                 System.out.println("User online: "+threadClient.size());
-                server.broadcast("User online: "+threadClient.size());
+                server.broadcast("User online: "+threadClient.size()+"\n");
 
                 out.close();
                 in.close();

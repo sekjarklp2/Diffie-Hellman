@@ -3,6 +3,7 @@ package algoritmaDH;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
+import java.util.Scanner;
 
 public class DHClient {
     // deklarasi socket
@@ -28,19 +29,22 @@ public class DHClient {
         socket = null;
         out = null;
         in = null;
-
+        String address = "localhost";
         try {
             // mengkoneksikan client dengan socket yang sudah ada di port 4444 untuk host: localhost
-            socket = new Socket("localhost",4444);
+            Scanner sc = new Scanner(System.in);
+            System.out.print("Enter server's IP address: ");
+            address = sc.nextLine();
+            socket = new Socket(address,4444);
 
             // menghubungkan I/O stream dengan socket
             out = new PrintWriter(socket.getOutputStream(),true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host: localhost.");
+            System.err.println("Don't know about host: "+address);
             System.exit(1);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for " + "the connection to: localhost.");
+            System.err.println("Couldn't get I/O for " + "the connection to: "+address);
             System.exit(1);
         }
         
@@ -176,11 +180,11 @@ public class DHClient {
                             words[2] = words[2].trim();
                             DHClient.setP(new BigInteger(words[1]));
                             DHClient.setA(new BigInteger(words[2]));
-
+                            System.out.println("NOTE used Prime: "+DHClient.getP()+" used alpha: "+DHClient.getA());
                              if (!words[1].isEmpty()) {
                                 setXa(DH.getSecretKey(DHClient.getP()));
                                 setYa(DH.getPublicKey(DHClient.getA(),DHClient.getXa(),DHClient.getP()));
-                                System.out.println("Secret Key: "+Xa+" Public Key: "+Ya);
+                                System.out.println("Secret Key: "+Xa+" Public Key: "+Ya+"\n");
                          }
                         }
                     }

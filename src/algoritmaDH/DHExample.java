@@ -5,9 +5,10 @@ import java.math.BigInteger;
 public class DHExample {
     public static void main(String[] args) {
         // tentukan bilangan prima yang digunakan dan primitive rootnya
-        BigInteger p = DH.getRandomPrime(12);
+        DH.getPrimeFactors();
+        BigInteger p = DH.getRandomPrime(512);
         BigInteger a = DH.getPrimitiveRoot(p);
-        
+        System.out.println(p);
         // generetan Alice
         BigInteger Xa = DH.getSecretKey(p);
         BigInteger Ya = DH.getPublicKey(a, Xa, p);
