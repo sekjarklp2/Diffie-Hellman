@@ -1,20 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package dh.cs;
-
-/**
- *
- * @author hades
- */
+package algoritmaDH;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 
 public class DHClient {
-    
     // deklarasi socket
     private static Socket socket;
     
@@ -24,6 +14,7 @@ public class DHClient {
     
     // deklarasi boolean untuk status, diletakkan dalam scope private static agar dapat diakses keseluruhan class
     private static boolean active;
+    
     // deklarasi Global parameter
     private static BigInteger p;
     private static BigInteger a;
@@ -31,14 +22,14 @@ public class DHClient {
     private static BigInteger Ya;
     private static BigInteger Yb;
     private static BigInteger Ka;
+    
     public static void main(String[] args) throws IOException{
-        
         // inisialisasi socket dan I/O
         socket = null;
         out = null;
         in = null;
 
-        try{
+        try {
             // mengkoneksikan client dengan socket yang sudah ada di port 4444 untuk host: localhost
             socket = new Socket("localhost",4444);
 
@@ -71,10 +62,11 @@ public class DHClient {
                     fromUser= fromUser+" "+DHClient.getYa();
                     out.println(fromUser);
                 }
-                    // inputan dari console nantinya akan ditampilkan dari PrintWriter stream pada thread
-                  else{out.println(fromUser);}
+                // inputan dari console nantinya akan ditampilkan dari PrintWriter stream pada thread
+                  else {
+                      out.println(fromUser);
+                  }
             }
-            
         }
  
         // socket dan I/O stream ditutup
@@ -169,43 +161,42 @@ public class DHClient {
     }
     
     private static class threads extends Thread {
-        
         // tidak membutuhkan constructor, hanya berjalan menjalan fungsi run setiap diinstansiasi di fungsi utama
-        public void run(){
-            try{
+        public void run() {
+            try {
                 String fromServer;
  
                 // membaca input dari server
                 while ((fromServer = in.readLine()) != null) {
-                    if (fromServer.startsWith("GP")){
+                    if (fromServer.startsWith("GP")) {
                         String[] words = fromServer.split("\\s", 3);
-                                        if (words.length > 1 && words[1] != null) {
-                                        words[1] = words[1].trim();
-                                        words[2] = words[2].trim();
-                                        DHClient.setP(new BigInteger(words[1]));
-                                        DHClient.setA(new BigInteger(words[2]));
-                                        
-                                         if (!words[1].isEmpty()) {
-                                             setXa(DH.getSecretKey(DHClient.getP()));
-                                             setYa(DH.getPublicKey(DHClient.getA(),DHClient.getXa(),DHClient.getP()));
-                                             System.out.println("Secret Key: "+Xa+" Public Key: "+Ya);
-                                         }
-                                        }
+                        
+                        if (words.length > 1 && words[1] != null) {
+                            words[1] = words[1].trim();
+                            words[2] = words[2].trim();
+                            DHClient.setP(new BigInteger(words[1]));
+                            DHClient.setA(new BigInteger(words[2]));
+
+                             if (!words[1].isEmpty()) {
+                                setXa(DH.getSecretKey(DHClient.getP()));
+                                setYa(DH.getPublicKey(DHClient.getA(),DHClient.getXa(),DHClient.getP()));
+                                System.out.println("Secret Key: "+Xa+" Public Key: "+Ya);
+                         }
+                        }
                     }
-                    else if (fromServer.startsWith("Shared")){
+                    else if (fromServer.startsWith("Shared")) {
                         String[] words = fromServer.split("\\s", 3);
-                                        if (words.length > 1 && words[1] != null) {
-                                        words[1] = words[1].trim();
-                                        words[2] = words[2].trim();
-                                        DHClient.setYb(new BigInteger(words[2]));
-                                        
-                                         if (!words[1].isEmpty()) {
-                                             DHClient.setKa(DH.getSessionKey(DHClient.getXa(), DHClient.getYb(), DHClient.getP()));
-                                           
-                                             System.out.println("Session key: "+DHClient.getKa());
-                                         }
-                                        }
+                        if (words.length > 1 && words[1] != null) {
+                            words[1] = words[1].trim();
+                            words[2] = words[2].trim();
+                            DHClient.setYb(new BigInteger(words[2]));
+                            if (!words[1].isEmpty()) {
+                                DHClient.setKa(DH.getSessionKey(DHClient.getXa(), DHClient.getYb(), DHClient.getP()));
+                                System.out.println("Session key: "+DHClient.getKa());
+                            }
+                        }
                     }
+
                     // cek apabila input dari server adalah "<Server> Exit." maka berhenti membaca dan keluar
                     else if (fromServer.equals("Server : you quit")){
                         break;
@@ -216,9 +207,7 @@ public class DHClient {
                 // ketika sudah berhenti membaca maka status thread diubah jadi false sehingga tidak dapat lagi membaca input dari user pada console
                 active = false;
             } catch(IOException e){
-                
-            } 
-            
+            }
         }
     }
 }
